@@ -4047,7 +4047,7 @@ int main(int argc, char *argv[])
 
     sprintf(actual_roms_dir,"%s",globalpath);
 
-    credits();
+    //credits();
     //volume = 50;
 
     load_mconfig();
