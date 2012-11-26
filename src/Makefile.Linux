@@ -5,6 +5,13 @@ BUILD_EXT=.gpe
 PLATFORM=__ARM__
 EXTRA_OBJS=flush_uppermem_cache.o
 EXTRA_LIBS=-liconv
+else ifeq ($(TARGET),PI)
+PREFIX=
+BASE_DEV=/usr
+BUILD_EXT=
+PLATFORM=__ARM__
+EXTRA_OBJS=
+EXTRA_LIBS=
 else
 PREFIX=
 BASE_DEV=/usr
