@@ -1,27 +1,25 @@
 ifeq ($(TARGET),WIZ)
 PREFIX=arm-openwiz-linux-gnu-
 BASE_DEV=/opt/openwiz/toolchain/arm-openwiz-linux-gnu
-BUILD_EXT=.gpe
+BUILD_APP=gp2xspectrum.gpe
 PLATFORM=__ARM__
 EXTRA_OBJS=flush_uppermem_cache.o
 EXTRA_LIBS=-liconv
 else ifeq ($(TARGET),PI)
 PREFIX=
 BASE_DEV=/usr
-BUILD_EXT=
-PLATFORM=__ARM__
+BUILD_APP=pixpectrum
+PLATFORM=__RASPI__
 EXTRA_OBJS=
 EXTRA_LIBS=
 else
 PREFIX=
 BASE_DEV=/usr
-BUILD_EXT=
+BUILD_APP=gp2xpectrum
 PLATFORM=__I386__
 EXTRA_OBJS=
 EXTRA_LIBS=
 endif
-
-BUILD_APP = gp2xpectrum$(BUILD_EXT)
 
 CC    := $(PREFIX)gcc
 LD    := $(PREFIX)gcc
