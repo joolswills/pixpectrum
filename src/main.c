@@ -155,12 +155,12 @@ int fexits(char *name){
     FILE *fp = fopen(name,"r");
     if (fp == 0)
     {
-    	return 0;
+        return 0;
     }
     else
     {
-    	fclose(fp);
-    	return 1;
+        fclose(fp);
+        return 1;
     }
 }
 
@@ -175,39 +175,39 @@ void set_emupalette()
 
     if(!zx_ula64_enabled)
     {
-		for (i = 0; i < 17; i++)
-		{
-			palette[i].r = r = zx_colours[i][0];
-			palette[i].g = g = zx_colours[i][1];
-			palette[i].b = b = zx_colours[i][2];
+        for (i = 0; i < 17; i++)
+        {
+            palette[i].r = r = zx_colours[i][0];
+            palette[i].g = g = zx_colours[i][1];
+            palette[i].b = b = zx_colours[i][2];
 
-			palette[i+18].r = r >> 1;
-			palette[i+18].g = (g >> 2) | 64;
-			palette[i+18].b = b >> 1;
+            palette[i+18].r = r >> 1;
+            palette[i+18].g = (g >> 2) | 64;
+            palette[i+18].b = b >> 1;
 
-		}
+        }
     }
     else
     {
-		for (i = 0; i < 64; i++)
-		{
+        for (i = 0; i < 64; i++)
+        {
 
-	    	byte r = (zx_ula64_palette[i] & 0x1C ) >> 2;
-	    	byte g = (zx_ula64_palette[i] & 0xE0 ) >> 5;
-	    	byte b = ((zx_ula64_palette[i] & 0x03 ) << 1 ) | (zx_ula64_palette[i] & 0x01 );
+            byte r = (zx_ula64_palette[i] & 0x1C ) >> 2;
+            byte g = (zx_ula64_palette[i] & 0xE0 ) >> 5;
+            byte b = ((zx_ula64_palette[i] & 0x03 ) << 1 ) | (zx_ula64_palette[i] & 0x01 );
 
-	    	r = ( r << 5 )+( r <<2 )+( r & 0x03 );
-	    	g = ( g << 5 )+( g <<2 )+( g & 0x03 );
-	    	b = ( b << 5 )+( b <<2 )+( b & 0x03 );
+            r = ( r << 5 )+( r <<2 )+( r & 0x03 );
+            g = ( g << 5 )+( g <<2 )+( g & 0x03 );
+            b = ( b << 5 )+( b <<2 )+( b & 0x03 );
 
-	        palette[i].r =  r;
-	        palette[i].g =  g;
-	        palette[i].b =  b;
+            palette[i].r =  r;
+            palette[i].g =  g;
+            palette[i].b =  b;
 
-			palette[i+64].r = r >> 1;
-			palette[i+64].g = (g >> 2) | 64;
-			palette[i+64].b = b >> 1;
-		}
+            palette[i+64].r = r >> 1;
+            palette[i+64].g = (g >> 2) | 64;
+            palette[i+64].b = b >> 1;
+        }
     }
 
 
@@ -261,8 +261,8 @@ void SyncFreq()
     unsigned cur = time -oldtime;
     if(cur < delayvalue)
     {
-    	int toWait = delayvalue - (time - oldtime);
-    	if(toWait > 0 && toWait < 500)
+        int toWait = delayvalue - (time - oldtime);
+        if(toWait > 0 && toWait < 500)
              usleep(toWait *1000);//10-6 //menos energia, bueno para el thread
 
     }
@@ -270,8 +270,8 @@ void SyncFreq()
 
     do
     {
-    	time = getTicks();
-    	usleep(100);
+        time = getTicks();
+        usleep(100);
     }
     while ((time - oldtime) < delayvalue); // asegura la temporizacion
 
@@ -287,8 +287,8 @@ void SyncFreq2()
 
     do
     {
-    	timet = getTicks();
-    	usleep(100);
+        timet = getTicks();
+        usleep(100);
     }
     while ((timet - oldtimet) < /*5*/10); // asegura la temporizacion
 
@@ -357,7 +357,7 @@ void load_mconfig()
 void save_mconfig()
 {
     FILE *fp;
-	char pathstring[512];
+    char pathstring[512];
 
     sprintf(pathstring,"%s/saves/_xpectrum.cfg",globalpath);
 
@@ -377,7 +377,7 @@ void save_mconfig()
 void speccy_corner()
 {
 #if !defined(IPHONE) && !defined(ANDROID)
-	int x1 = 320-1,y1 = 240-64,x;
+    int x1 = 320-1,y1 = 240-64,x;
     int n,m;
     unsigned char *p;
     for(n = 0;n<32;n++)
@@ -548,7 +548,7 @@ void mask_out(int  x,int y)
 
                 if (zx_ula64_enabled)
                 {
-                	if(v<63)v += 64;
+                    if(v<63)v += 64;
                 }
                 else
                 {
@@ -903,12 +903,12 @@ int load_scr(char *name, char * buffer, int size)
     if(strcmp(name,last_rom_name)==0)return 0;
     strcpy(last_rom_name,name);
 
-	//if(zx_ula64_enabled !=0 && (mconfig.ula64 == 1 || mconfig.ula64 == 0))
+    //if(zx_ula64_enabled !=0 && (mconfig.ula64 == 1 || mconfig.ula64 == 0))
     if(zx_ula64_enabled !=0 && (mconfig.ula64 != 2))
-	{
-	    zx_ula64_enabled = 0;
-	    set_emupalette();
-	}
+    {
+        zx_ula64_enabled = 0;
+        set_emupalette();
+    }
 
     fp = fopen(name,"rb");
     if (fp == NULL) return 1;
@@ -962,41 +962,41 @@ int load_savsrc(char *name, char * buffer, int size)
        && state_header.ulaplus[3]=='6' && state_header.ulaplus[4]=='4' )
 
     {
-    	BZ2_bzRead (&bzip_err, my_bzip, (void *)&ula64colors, 64);
-    	if(mconfig.ula64 != 2)
-    	{
-   	      zx_ula64_enabled = 1;
-   	      memcpy(zx_ula64_palette,ula64colors,64);
-   	      set_emupalette();
-    	}
-    	/*
-    	if(mconfig.ula64 == 1)
-    	{
-   	      zx_ula64_enabled = 1;
-   	      memcpy(zx_ula64_palette,ula64colors,64);
-   	      set_emupalette();
-    	}
-    	else if(mconfig.ula64 == 0)
-    	{
-     	   zx_ula64_enabled = 0;
-     	   set_emupalette();
-    	}
-    	*/
+        BZ2_bzRead (&bzip_err, my_bzip, (void *)&ula64colors, 64);
+        if(mconfig.ula64 != 2)
+        {
+          zx_ula64_enabled = 1;
+          memcpy(zx_ula64_palette,ula64colors,64);
+          set_emupalette();
+        }
+        /*
+        if(mconfig.ula64 == 1)
+        {
+          zx_ula64_enabled = 1;
+          memcpy(zx_ula64_palette,ula64colors,64);
+          set_emupalette();
+        }
+        else if(mconfig.ula64 == 0)
+        {
+           zx_ula64_enabled = 0;
+           set_emupalette();
+        }
+        */
     }
     else
     {
-    	//if(zx_ula64_enabled !=0 && (mconfig.ula64 == 1 || mconfig.ula64 == 0))
-    	if(zx_ula64_enabled !=0 && (mconfig.ula64 !=2))
-    	{
-   	      zx_ula64_enabled = 0;
-   	      set_emupalette();
-    	}
+        //if(zx_ula64_enabled !=0 && (mconfig.ula64 == 1 || mconfig.ula64 == 0))
+        if(zx_ula64_enabled !=0 && (mconfig.ula64 !=2))
+        {
+          zx_ula64_enabled = 0;
+          set_emupalette();
+        }
     }
 
     if (state_header.have_fd_info == 1)
     {
-    	byte tmp[4+4+4+4+ sizeof (t_FDC)+sizeof (t_track)];
-    	BZ2_bzRead (&bzip_err, my_bzip, (void *) &tmp,sizeof(tmp));
+        byte tmp[4+4+4+4+ sizeof (t_FDC)+sizeof (t_track)];
+        BZ2_bzRead (&bzip_err, my_bzip, (void *) &tmp,sizeof(tmp));
     }
 
     BZ2_bzRead (&bzip_err, my_bzip, buffer, size);
@@ -1097,15 +1097,15 @@ int get_rom(int tape)
             else if ( !strcasecmp(files[posfile].file+l-4,".sav") )
             {
 
-            	if (!load_savsrc(files[posfile].file, scrbuff, sizeof(scrbuff)))
+                if (!load_savsrc(files[posfile].file, scrbuff, sizeof(scrbuff)))
                 {
 
-             		byte nPages = scrbuff[6+sizeof(Z80Regs)];
+                    byte nPages = scrbuff[6+sizeof(Z80Regs)];
 
-             		if(nPages==3 || nPages==1)
-            		   DrawZXtoScreen(video_screen8, &scrbuff[7+sizeof(Z80Regs)], scale, 2);
-             		else if(nPages==8)
-             		   DrawZXtoScreen(video_screen8, &scrbuff[7+sizeof(Z80Regs)+  (0x4000 * 5)], scale, 2);
+                    if(nPages==3 || nPages==1)
+                       DrawZXtoScreen(video_screen8, &scrbuff[7+sizeof(Z80Regs)], scale, 2);
+                    else if(nPages==8)
+                       DrawZXtoScreen(video_screen8, &scrbuff[7+sizeof(Z80Regs)+  (0x4000 * 5)], scale, 2);
 
                 }
              }
@@ -1245,7 +1245,7 @@ int get_rom(int tape)
 */
 #if  defined(IPHONE) || defined(ANDROID)
         if(downloads_dir || saves_dir)
-        	v_putcad(1,28,132,"Use X to Exit, B to Play, Y to delete");
+            v_putcad(1,28,132,"Use X to Exit, B to Play, Y to delete");
         else
             v_putcad(1,28,132,"Use X to Exit, Use B to Play");
 #else
@@ -1288,8 +1288,8 @@ int get_rom(int tape)
             {
                 if (!files[posfile].is_directory)
                 {
-                	last_rom_name[0]=0;
-                	return posfile;
+                    last_rom_name[0]=0;
+                    return posfile;
                 }
                 else
                 {
@@ -1308,10 +1308,10 @@ int get_rom(int tape)
             if ( new_key & JOY_BUTTON_Y )
             {
 #if  defined(IPHONE) || defined(ANDROID)
-            	if(!(downloads_dir || saves_dir))
-            	   continue;
+                if(!(downloads_dir || saves_dir))
+                   continue;
 #endif
-            	char fname[257];
+                char fname[257];
                 ClearScreen(COLORFONDO);
 
                 COLORFONDO = 128+3;
@@ -1337,7 +1337,7 @@ int get_rom(int tape)
 
         if ( downloads_dir && new_key & JOY_BUTTON_A )
         {
-        	char fname[257];
+            char fname[257];
             ClearScreen(COLORFONDO);
 
             COLORFONDO = 128+3;
@@ -1359,9 +1359,9 @@ int get_rom(int tape)
         if (new_key & JOY_BUTTON_MENU && !tape)
         {
 #if defined(IPHONE) || defined(ANDROID)
-            	continue;
+                continue;
 #endif
-			ClearScreen(COLORFONDO);
+            ClearScreen(COLORFONDO);
 
             COLORFONDO = 128+3;
             v_putcad((40-35)>>1,10,132,"You really want compress all files?");
@@ -1423,8 +1423,8 @@ int get_rom(int tape)
 
         if (new_key & JOY_BUTTON_X)
         {
-        	last_rom_name[0]=0;
-        	return -1;
+            last_rom_name[0]=0;
+            return -1;
         }
 
     }
@@ -1705,7 +1705,7 @@ int poke_manager()
         n--;
     }
     //sprintf(photo_name,"saves/%s.pok",mname);
-	sprintf(photo_name,"%s/saves/%s.pok",globalpath,mname);
+    sprintf(photo_name,"%s/saves/%s.pok",globalpath,mname);
 
     read_pokefile(photo_name);
 
@@ -1721,15 +1721,15 @@ int poke_manager()
 #ifdef  CAPTURE
         if ((old_key & JOY_BUTTON_VOLUP) && (old_key & JOY_BUTTON_SELECT))
         {
-	        char pathstring1[512];
-			char pathstring2[512];
-			char pathstring3[512];
-			sprintf(pathstring1,"%s/img/poke_manager.bmp",globalpath);
-	        sprintf(pathstring2,"%s/img/poke_edit_name.bmp",globalpath);
-	        sprintf(pathstring3,"%s/img/poke_edit_values.bmp",globalpath);
+            char pathstring1[512];
+            char pathstring2[512];
+            char pathstring3[512];
+            sprintf(pathstring1,"%s/img/poke_manager.bmp",globalpath);
+            sprintf(pathstring2,"%s/img/poke_edit_name.bmp",globalpath);
+            sprintf(pathstring3,"%s/img/poke_edit_values.bmp",globalpath);
             if(editor_mode==0) save_bmp(pathstring1,  video_screen8, 320, 240, 320);
-	        if(editor_mode==1) save_bmp(pathstring2, video_screen8, 320, 240, 320);
-	        if(editor_mode==2) save_bmp(pathstring3, video_screen8, 320, 240, 320);
+            if(editor_mode==1) save_bmp(pathstring2, video_screen8, 320, 240, 320);
+            if(editor_mode==2) save_bmp(pathstring3, video_screen8, 320, 240, 320);
         }
 #endif
         ClearScreen(COLORFONDO);
@@ -2105,8 +2105,8 @@ int disk_manager()
 #ifdef  CAPTURE
         if ((old_key & JOY_BUTTON_VOLUP) && (old_key & JOY_BUTTON_SELECT))
         {
-			char pathstring[512];
-			sprintf(pathstring,"%s/img/disk_manager.bmp",globalpath);
+            char pathstring[512];
+            sprintf(pathstring,"%s/img/disk_manager.bmp",globalpath);
             save_bmp(pathstring, video_screen8, 320, 240, 320);
         }
 #endif
@@ -2194,7 +2194,7 @@ int disk_manager()
                 m = -1;
                 if (cad[0] != 0)
                 {
-					sprintf(photo_name,"%s/saves/%s.dsk",globalpath,cad);
+                    sprintf(photo_name,"%s/saves/%s.dsk",globalpath,cad);
                     m = dsk_save(photo_name);sync();
                 }
 
@@ -2258,13 +2258,13 @@ int Config_SCR()
     int ret = 0;
     char *mname;
     while(nKeys & (JOY_BUTTON_A | JOY_BUTTON_B | JOY_BUTTON_X | JOY_BUTTON_Y | JOY_BUTTON_MENU))
-    	nKeys = joystick_read();
+        nKeys = joystick_read();
 
 //    set_mypalette()
 
 
-	MCONFIG oldmconfig;
-	memcpy(&oldmconfig,&mconfig,sizeof(MCONFIG));
+    MCONFIG oldmconfig;
+    memcpy(&oldmconfig,&mconfig,sizeof(MCONFIG));
 
     g = 0;
     while(1)
@@ -2275,7 +2275,7 @@ int Config_SCR()
         if (old_key & (JOY_BUTTON_VOLUP | JOY_BUTTON_SELECT))
         {
             char pathstring[512];
-			sprintf(pathstring,"%s/img/config.bmp",globalpath);
+            sprintf(pathstring,"%s/img/config.bmp",globalpath);
             save_bmp(pathstring, video_screen8, 320, 240, 320);
         }
 #endif
@@ -2365,9 +2365,9 @@ int Config_SCR()
         //sprintf(menustring,"CPU Speed %i MHz",mconfig.cpu_freq);
         //v_putcad(10,y,130,menustring);
         if (mconfig.frameskip==2)
-        	 v_putcad(10,y,130,"Auto Skip Frames");
+             v_putcad(10,y,130,"Auto Skip Frames");
         else if (mconfig.frameskip == 1)
-        	 v_putcad(10,y,130,"Draw 1/2 Frames");
+             v_putcad(10,y,130,"Draw 1/2 Frames");
         else v_putcad(10,y,130,"Draw All Frames");
         y += 1;
 
@@ -2516,7 +2516,7 @@ int Config_SCR()
 /*
             if (op == 15)
             {
-            	mconfig.cpu_freq -= 5;
+                mconfig.cpu_freq -= 5;
                 if (mconfig.cpu_freq<180)
                 mconfig.cpu_freq = 180;
             }
@@ -2625,7 +2625,7 @@ int Config_SCR()
                 // obten nombre sin extension
                 n = 0;while(mname[n] != 0) n++;
                 while(n>0) {if (mname[n] == '.') {mname[n] = 0;break;} n--;}
-	            sprintf(photo_name,"%s/saves/%s.key",globalpath,mname);
+                sprintf(photo_name,"%s/saves/%s.key",globalpath,mname);
                 write_keyfile(photo_name);break;
             }
             if (op == 2)  {save_state(0);break;}
@@ -2685,8 +2685,8 @@ int Config_SCR()
 
             if (op == 24){
 
-            	 ret = 1;
-            	 break;
+                 ret = 1;
+                 break;
             }
 
             if (op == 25) break;
@@ -2697,13 +2697,13 @@ int Config_SCR()
 
     while(nKeys & (JOY_BUTTON_A | JOY_BUTTON_B | JOY_BUTTON_X | JOY_BUTTON_Y | JOY_BUTTON_MENU)) nKeys = joystick_read();
 
-	//comprobar si cambio y grabar
+    //comprobar si cambio y grabar
     //printf("miro si grabo!\n");
-	if(memcmp(&mconfig,&oldmconfig,sizeof(MCONFIG))!=0)
-	{
-	    //printf("mconfig modificado, lo grabo\n!");
-		save_mconfig();
-	}
+    if(memcmp(&mconfig,&oldmconfig,sizeof(MCONFIG))!=0)
+    {
+        //printf("mconfig modificado, lo grabo\n!");
+        save_mconfig();
+    }
 
     return ret;
 }
@@ -2805,18 +2805,18 @@ void read_keyfile(char *name)
     if (fp == 0)
     {
         //seteamos keys por defecto.
-    	mJoystick = 1;
-    	map_keys[0] = SPECKEY_O;
-    	map_keys[1] = SPECKEY_P;
-    	map_keys[2] = SPECKEY_Q;
-    	map_keys[3] = SPECKEY_A;
-    	map_keys[4] = SPECKEY_M;
-    	map_keys[5] = SPECKEY_SPACE;
-    	map_keys[6] = SPECKEY_ENTER;
-    	map_keys[7] = SPECKEY_0;
-    	map_keys[8] = SPECKEY_SHIFT;
-    	map_keys[9] = SPECKEY_SYMB;
-    	return;
+        mJoystick = 1;
+        map_keys[0] = SPECKEY_O;
+        map_keys[1] = SPECKEY_P;
+        map_keys[2] = SPECKEY_Q;
+        map_keys[3] = SPECKEY_A;
+        map_keys[4] = SPECKEY_M;
+        map_keys[5] = SPECKEY_SPACE;
+        map_keys[6] = SPECKEY_ENTER;
+        map_keys[7] = SPECKEY_0;
+        map_keys[8] = SPECKEY_SHIFT;
+        map_keys[9] = SPECKEY_SYMB;
+        return;
     }
     if (fscanf(fp,"mJoystick: %i\n",&m) == 1) mJoystick = m;
     if (fscanf(fp,"LEFT: %i\n",&m) == 1) map_keys[0] = m;
@@ -2911,9 +2911,9 @@ int display_keyboard()
         }
 
         if ((new_key & JOY_BUTTON_MENU) && cury != 4) {
-        	redrawmask = 1;
-        	program_mode ^= 1;
-        	while(nKeys & JOY_BUTTON_MENU) nKeys = joystick_read();
+            redrawmask = 1;
+            program_mode ^= 1;
+            while(nKeys & JOY_BUTTON_MENU) nKeys = joystick_read();
         }
 
         if (program_mode) redrawmask = 1;
@@ -2994,7 +2994,7 @@ int display_keyboard()
                     nmultikey = 0;
                 }
                 if (curx == 4) {
-                	emulating = 0;
+                    emulating = 0;
                     tape_browser();
                     emulating = 1;
                     keyboard_on = 0;
@@ -3073,8 +3073,8 @@ int zip_load(char *name)
 
     if (err!=UNZ_OK || gi.number_entry<=0 )
     {
-    	unzClose(uf);
-    	return -2;
+        unzClose(uf);
+        return -2;
     }
     m = gi.number_entry;
     ////seleccionar
@@ -3087,7 +3087,7 @@ int zip_load(char *name)
     for(idx = 0;idx<m;idx++)
     {
 
-    	err = unzGetCurrentFileInfo(uf,&file_info,&filename_inzip[0],256,NULL,0,NULL,0);
+        err = unzGetCurrentFileInfo(uf,&file_info,&filename_inzip[0],256,NULL,0,NULL,0);
 
         if (err!=UNZ_OK)
         {
@@ -3096,7 +3096,7 @@ int zip_load(char *name)
 
         if ((
 
-        	  is_ext(filename_inzip,".z80") ||
+              is_ext(filename_inzip,".z80") ||
               is_ext(filename_inzip,".sna") ||
               is_ext(filename_inzip,".tzx") ||
               is_ext(filename_inzip,".tap") ||
@@ -3106,7 +3106,7 @@ int zip_load(char *name)
             ))
         {
 
-        	strcpy(zip_files[zip_num_files].file,&filename_inzip[0]);
+            strcpy(zip_files[zip_num_files].file,&filename_inzip[0]);
 
             zip_pos_file[zip_num_files] = idx;
             zip_num_files++;
@@ -3208,15 +3208,15 @@ int zip_load(char *name)
 
     if (unzLocateFile(uf,zip_files[posfile].file,0)!=UNZ_OK)
     {
-    	unzClose(uf);
-    	return -2;
+        unzClose(uf);
+        return -2;
     }
 
-	err = unzGetCurrentFileInfo(uf,&file_info,filename_inzip,sizeof(filename_inzip),NULL,0,NULL,0);
+    err = unzGetCurrentFileInfo(uf,&file_info,filename_inzip,sizeof(filename_inzip),NULL,0,NULL,0);
     if (err!=UNZ_OK)
     {
-    	unzClose(uf);
-    	return -2;
+        unzClose(uf);
+        return -2;
     }
 
     GAME_size = file_info.uncompressed_size;
@@ -3508,7 +3508,7 @@ int save_state(int st)
     n = 0;while(mname[n] != 0) n++;
     while(n>0) {if (mname[n] == '.') {mname[n] = 0;break;} n--;}
 
-	sprintf(photo_name,"%s/saves/%s.tmp",globalpath,mname);
+    sprintf(photo_name,"%s/saves/%s.tmp",globalpath,mname);
     sprintf(savefile,"%s/saves/%s.sav",globalpath,mname);
     sprintf(old_savefile,"%s/saves/%s-old.sav",globalpath,mname);
     fp = fopen(photo_name,"wb");
@@ -3534,9 +3534,9 @@ int save_state(int st)
 
 
     if(zx_ula64_enabled)
-    	strcpy((void*)state_header.ulaplus,"ula64");
+        strcpy((void*)state_header.ulaplus,"ula64");
     else
-    	strcpy((void*)state_header.ulaplus,"nope");
+        strcpy((void*)state_header.ulaplus,"nope");
 
     BZ2_bzWrite (&bzip_err, my_bzip, (void *)&state_header,  sizeof(state_header));
 
@@ -3546,10 +3546,10 @@ int save_state(int st)
     {
         if(zx_ula64_enabled)
         {
-        	  BZ2_bzWrite (&bzip_err, my_bzip, (void *)&zx_ula64_palette,64);
+              BZ2_bzWrite (&bzip_err, my_bzip, (void *)&zx_ula64_palette,64);
         }
 
-    	if (state_header.have_fd_info == 1)
+        if (state_header.have_fd_info == 1)
         {
             BZ2_bzWrite (&bzip_err, my_bzip, (void *) &driveA.current_track,  4);
             BZ2_bzWrite (&bzip_err, my_bzip, (void *) &driveA.current_side,  4);
@@ -3585,8 +3585,8 @@ int save_state(int st)
     {
 
         //remove(savefile);
-    	remove(old_savefile);
-    	rename(savefile,old_savefile);
+        remove(old_savefile);
+        rename(savefile,old_savefile);
         rename(photo_name,savefile);
     }
     else remove(photo_name);
@@ -3619,7 +3619,7 @@ int load_state(int st)
     n = 0;while(mname[n] != 0) n++;
     while(n>0) {if (mname[n] == '.') {mname[n] = 0;break;} n--;}
 
-	sprintf(photo_name,"%s/saves/%s.sav",globalpath,mname);
+    sprintf(photo_name,"%s/saves/%s.sav",globalpath,mname);
 
     fp = fopen(photo_name,"rb");
     if (fp == NULL) return 0;
@@ -3633,8 +3633,8 @@ int load_state(int st)
     if(state_header.ulaplus[0]=='u' && state_header.ulaplus[1]=='l' && state_header.ulaplus[2]=='a'
        && state_header.ulaplus[3]=='6' && state_header.ulaplus[4]=='4')
     {
-    	ula64=1;
-    	BZ2_bzRead (&bzip_err, my_bzip, (void *)&ula64Colors, 64);
+        ula64=1;
+        BZ2_bzRead (&bzip_err, my_bzip, (void *)&ula64Colors, 64);
     }
 
     if (state_header.have_fd_info == 1)
@@ -3689,13 +3689,13 @@ int load_state(int st)
 
         if(ula64)
         {
-        	//if((!zx_ula64_enabled  && mconfig.ula64!=0)|| ( mconfig.ula64==1))
-        	if(!(zx_ula64_enabled  && mconfig.ula64==2))//if a save state has ula i put it but hw ula could be disabled
-        	{
-        		memcpy(zx_ula64_palette,ula64Colors,64);
-        		zx_ula64_enabled = 1;
-        		set_emupalette();
-        	}
+            //if((!zx_ula64_enabled  && mconfig.ula64!=0)|| ( mconfig.ula64==1))
+            if(!(zx_ula64_enabled  && mconfig.ula64==2))//if a save state has ula i put it but hw ula could be disabled
+            {
+                memcpy(zx_ula64_palette,ula64Colors,64);
+                zx_ula64_enabled = 1;
+                set_emupalette();
+            }
         }
 
         if (state_header.have_fd_info == 1)
@@ -3815,7 +3815,7 @@ tape_browser()
             }
             else
             {
-			   sprintf(photo_name,"%s/saves/%s.key",globalpath,mname);
+               sprintf(photo_name,"%s/saves/%s.key",globalpath,mname);
                read_keyfile(photo_name);
             }
 
@@ -3871,115 +3871,115 @@ static int frameskip_counter = 0;//nos indica el skip actual
 
 int skip_this_frame(void)
 {
-	static const int skiptable[FRAMESKIP_LEVELS][FRAMESKIP_LEVELS] =
-	{
-		{ 0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,0,0,0,0,0,0,0,0,1 },
-		{ 0,0,0,0,0,1,0,0,0,0,0,1 },
-		{ 0,0,0,1,0,0,0,1,0,0,0,1 },
-		{ 0,0,1,0,0,1,0,0,1,0,0,1 },
-		{ 0,1,0,0,1,0,1,0,0,1,0,1 },
-		{ 0,1,0,1,0,1,0,1,0,1,0,1 },
-		{ 0,1,0,1,1,0,1,0,1,1,0,1 },
-		{ 0,1,1,0,1,1,0,1,1,0,1,1 },
-		{ 0,1,1,1,0,1,1,1,0,1,1,1 },
-		{ 0,1,1,1,1,1,0,1,1,1,1,1 },
-		{ 0,1,1,1,1,1,1,1,1,1,1,1 }
-	};
-	return skiptable[frameskip][frameskip_counter /* % 12*/];
+    static const int skiptable[FRAMESKIP_LEVELS][FRAMESKIP_LEVELS] =
+    {
+        { 0,0,0,0,0,0,0,0,0,0,0,0 },
+        { 0,0,0,0,0,0,0,0,0,0,0,1 },
+        { 0,0,0,0,0,1,0,0,0,0,0,1 },
+        { 0,0,0,1,0,0,0,1,0,0,0,1 },
+        { 0,0,1,0,0,1,0,0,1,0,0,1 },
+        { 0,1,0,0,1,0,1,0,0,1,0,1 },
+        { 0,1,0,1,0,1,0,1,0,1,0,1 },
+        { 0,1,0,1,1,0,1,0,1,1,0,1 },
+        { 0,1,1,0,1,1,0,1,1,0,1,1 },
+        { 0,1,1,1,0,1,1,1,0,1,1,1 },
+        { 0,1,1,1,1,1,0,1,1,1,1,1 },
+        { 0,1,1,1,1,1,1,1,1,1,1,1 }
+    };
+    return skiptable[frameskip][frameskip_counter /* % 12*/];
 }
 
 void presync()
 {
 
-	float t_frame = (1000.0/50.0) * (100.0/(float)mconfig.speed_mode);
+    float t_frame = (1000.0/50.0) * (100.0/(float)mconfig.speed_mode);
 
-	if (prev_measure==0)
-	{
-		prev_measure = getTicks() - (FRAMESKIP_LEVELS * FRAMESKIP_FACTOR) * (int)t_frame;
-		last = getTicks();
-	}
+    if (prev_measure==0)
+    {
+        prev_measure = getTicks() - (FRAMESKIP_LEVELS * FRAMESKIP_FACTOR) * (int)t_frame;
+        last = getTicks();
+    }
 
-	if (frameskip_counter == 0)
-		this_frame_base = prev_measure + (FRAMESKIP_LEVELS * FRAMESKIP_FACTOR)* (int)t_frame;
+    if (frameskip_counter == 0)
+        this_frame_base = prev_measure + (FRAMESKIP_LEVELS * FRAMESKIP_FACTOR)* (int)t_frame;
 
-	curr = getTicks();
-	if ((curr - last) > 300)
-	{
-		frameskip_counter = 0;
-		frameskip = 0;
-		prev_measure = 0;
-		return;
-	}
-	last = curr;
+    curr = getTicks();
+    if ((curr - last) > 300)
+    {
+        frameskip_counter = 0;
+        frameskip = 0;
+        prev_measure = 0;
+        return;
+    }
+    last = curr;
 
-	if (skip_this_frame() == 0)
-	{
-		unsigned target;
+    if (skip_this_frame() == 0)
+    {
+        unsigned target;
 
-		if ( mconfig.sound_mode == 0 && !(mconfig.speed_loading && tape_playing))
-		{
-			target = this_frame_base + frameskip_counter * (int)t_frame;
-			if ((curr < target) && (target-curr<1000))
-			{
-				do
-				{
-					curr = getTicks();
-				} while ((curr < target) && (target-curr<1000));
-			}
-		}
-		if (frameskip_counter == 0)
-		{
-			float divdr;
-			//divdr = (float)((float)((float)(1000) / 50) * (float)(FRAMESKIP_LEVELS * FRAMESKIP_FACTOR)) / (float)(curr - prev_measure);
-			divdr = (float)((float) t_frame * (float)(FRAMESKIP_LEVELS * FRAMESKIP_FACTOR)) / (float)(curr - prev_measure);
-			speed = (int)(divdr * 100.0);
+        if ( mconfig.sound_mode == 0 && !(mconfig.speed_loading && tape_playing))
+        {
+            target = this_frame_base + frameskip_counter * (int)t_frame;
+            if ((curr < target) && (target-curr<1000))
+            {
+                do
+                {
+                    curr = getTicks();
+                } while ((curr < target) && (target-curr<1000));
+            }
+        }
+        if (frameskip_counter == 0)
+        {
+            float divdr;
+            //divdr = (float)((float)((float)(1000) / 50) * (float)(FRAMESKIP_LEVELS * FRAMESKIP_FACTOR)) / (float)(curr - prev_measure);
+            divdr = (float)((float) t_frame * (float)(FRAMESKIP_LEVELS * FRAMESKIP_FACTOR)) / (float)(curr - prev_measure);
+            speed = (int)(divdr * 100.0);
 
-			//int divdr;
-			//divdr = 50 * (curr - prev_measure) / (100 * FRAMESKIP_LEVELS * FRAMESKIP_FACTOR);
-			//speed = (1000 + divdr/2) / divdr;
+            //int divdr;
+            //divdr = 50 * (curr - prev_measure) / (100 * FRAMESKIP_LEVELS * FRAMESKIP_FACTOR);
+            //speed = (1000 + divdr/2) / divdr;
 
-			prev_measure = curr;
-		}
+            prev_measure = curr;
+        }
 
-		prev = curr;
+        prev = curr;
 
-		if(frameskip_counter == 0)
-		{
-			if (speed >= 98)
-			{
-				frameskipadjust++;
-				if (frameskipadjust >= 3)
-				{
-					frameskipadjust = 0;
+        if(frameskip_counter == 0)
+        {
+            if (speed >= 98)
+            {
+                frameskipadjust++;
+                if (frameskipadjust >= 3)
+                {
+                    frameskipadjust = 0;
 
-					if (frameskip > 0) frameskip--;
-				}
-			}
-			else
-			{
-				if (speed < 87)
-				{
-					frameskipadjust -= (90 - speed) / 5;
-				}
-				else
-				{
+                    if (frameskip > 0) frameskip--;
+                }
+            }
+            else
+            {
+                if (speed < 87)
+                {
+                    frameskipadjust -= (90 - speed) / 5;
+                }
+                else
+                {
 
-					if (frameskip < 8)
-						frameskipadjust--;
-				}
+                    if (frameskip < 8)
+                        frameskipadjust--;
+                }
 
-				while (frameskipadjust <= -2)
-				{
-					frameskipadjust += 2;
-					if (frameskip < FRAMESKIP_LEVELS-1) frameskip++;
-				}
-			}
-		}
-	}
+                while (frameskipadjust <= -2)
+                {
+                    frameskipadjust += 2;
+                    if (frameskip < FRAMESKIP_LEVELS-1) frameskip++;
+                }
+            }
+        }
+    }
 
 
-	frameskip_counter = (frameskip_counter + 1) % (FRAMESKIP_LEVELS * FRAMESKIP_FACTOR);
+    frameskip_counter = (frameskip_counter + 1) % (FRAMESKIP_LEVELS * FRAMESKIP_FACTOR);
 }
 
 ////////////////////////////
@@ -4032,7 +4032,7 @@ int main(int argc, char *argv[])
     //mount("-t vfat -o remount,sync,iocharset = utf8 /dev/mmcsd/disc0/part1 /mnt/sd");
 
 
-	char pathstring[512];
+    char pathstring[512];
 #ifndef ANDROID
     mkdir(globalpath, S_IREAD | S_IWRITE | S_IEXEC );
 #endif
@@ -4045,7 +4045,7 @@ int main(int argc, char *argv[])
     mkdir(pathstring, S_IREAD | S_IWRITE | S_IEXEC );
 #endif
 
-	sprintf(actual_roms_dir,"%s",globalpath);
+    sprintf(actual_roms_dir,"%s",globalpath);
 
     credits();
     //volume = 50;
@@ -4056,7 +4056,7 @@ int main(int argc, char *argv[])
     sound_volume(volume,volume);//FIX sin sonido se arranca no se pone el volumen
 
     if(mconfig.sound_mode==0)
-    	sound_close();
+        sound_close();
 
     tape_init();
 
@@ -4117,7 +4117,7 @@ int main(int argc, char *argv[])
                 }
                 else
                 {
-    			   sprintf(photo_name,"%s/saves/%s.key",globalpath,mname);
+                   sprintf(photo_name,"%s/saves/%s.key",globalpath,mname);
                    read_keyfile(photo_name);
                 }
             }
@@ -4149,8 +4149,8 @@ int main(int argc, char *argv[])
 #ifdef  CAPTURE
             if (old_key &( JOY_BUTTON_VOLUP |JOY_BUTTON_SELECT))
             {
-				char pathstring[512];
-				sprintf(pathstring,"%s/img/ingame.bmp",globalpath);
+                char pathstring[512];
+                sprintf(pathstring,"%s/img/ingame.bmp",globalpath);
                 save_bmp(pathstring, video_screen8, 320-64*full_screen, 240-48*full_screen, 320);
             }
 #endif
@@ -4165,10 +4165,10 @@ int main(int argc, char *argv[])
             {
                 //printf("Inicio llamada a ConfigSCR\n");
                 //TODO sound pause!
-            	emulating = 0;
-            	if (Config_SCR() == 1) break;
-            	//printf("Salida llamada a ConfigSCR\n");
-            	emulating = 1;
+                emulating = 0;
+                if (Config_SCR() == 1) break;
+                //printf("Salida llamada a ConfigSCR\n");
+                emulating = 1;
                 skip = 0;
                 prev_measure = 0;
                 frameskip = 0;
@@ -4180,10 +4180,10 @@ int main(int argc, char *argv[])
             new_key = nKeys & (~old_key);
             old_key = nKeys;
 #if !defined(IPHONE) && !defined(ANDROID)
-    	    if((old_key & JOY_BUTTON_VOLUP) && (nvol % 3 == 0))
-	            {volume += 1; if (volume > 100) volume = 100; sound_volume(volume,volume); nvol = 50*5;}
-	        if((old_key & JOY_BUTTON_VOLDOWN) && (nvol % 3 == 0))
-			    {volume -= 1; if (volume < 0) volume = 0; sound_volume(volume,volume); nvol = 50*5;}
+            if((old_key & JOY_BUTTON_VOLUP) && (nvol % 3 == 0))
+                {volume += 1; if (volume > 100) volume = 100; sound_volume(volume,volume); nvol = 50*5;}
+            if((old_key & JOY_BUTTON_VOLDOWN) && (nvol % 3 == 0))
+                {volume -= 1; if (volume < 0) volume = 0; sound_volume(volume,volume); nvol = 50*5;}
 
             if (nvol != 0)
             {
@@ -4232,17 +4232,17 @@ int main(int argc, char *argv[])
                 char result[30];
                 if (mconfig.frameskip==2)
                 {
-                	//sprintf( result, "FPS2: %d/%d", fpsseg, fpsseg_draw);
-        			int fps;
-        			char buf[30];
-        			int divdr;
-        			divdr = 100 * FRAMESKIP_LEVELS;
-        			fps = (50 * (FRAMESKIP_LEVELS - frameskip) * speed + (divdr / 2)) / divdr;
-        			sprintf(result,"%s%2d%4d%%%4d/%d fps",1?"auto":"fskp",frameskip,speed,fps,(int)(50+0.5));
+                    //sprintf( result, "FPS2: %d/%d", fpsseg, fpsseg_draw);
+                    int fps;
+                    char buf[30];
+                    int divdr;
+                    divdr = 100 * FRAMESKIP_LEVELS;
+                    fps = (50 * (FRAMESKIP_LEVELS - frameskip) * speed + (divdr / 2)) / divdr;
+                    sprintf(result,"%s%2d%4d%%%4d/%d fps",1?"auto":"fskp",frameskip,speed,fps,(int)(50+0.5));
                 }
                 else  if (mconfig.frameskip==1)
                 {
-                	sprintf( result, "FPS: %d/%d", fpsseg/2,fpsseg );
+                    sprintf( result, "FPS: %d/%d", fpsseg/2,fpsseg );
                 }
                 else
                     sprintf( result, "FPS: %d", fpsseg );
@@ -4280,14 +4280,14 @@ int main(int argc, char *argv[])
 
                 if(mconfig.frameskip == 2)
                 {
-                	//skip = !(cur_frame % 3 ==  0);
-                	presync();
-                	skip = skip_this_frame();
+                    //skip = !(cur_frame % 3 ==  0);
+                    presync();
+                    skip = skip_this_frame();
                     //if(!skip)count_fps_draw++;
                 }
                 else if (mconfig.frameskip == 1)
                 {
-                	skip = !(cur_frame % 2 ==  0);
+                    skip = !(cur_frame % 2 ==  0);
                 }
                 else skip = 0;
 
@@ -4309,7 +4309,7 @@ int main(int argc, char *argv[])
                 else
                 {
 
-                	COLORFONDO = 134;
+                    COLORFONDO = 134;
 #if defined(IPHONE) || defined(ANDROID)
                    v_putcad(320/8-9,240/8-5,129,"PLAY");
 #else
@@ -4452,9 +4452,9 @@ int main(int argc, char *argv[])
             if (keyboard_on)
             {
                 if(ext_keyboard)
-                	keyboard_on = 0;
+                    keyboard_on = 0;
                 else
-            	    sel_key = display_keyboard();
+                    sel_key = display_keyboard();
 /*
                 if ((old_key & JOY_BUTTON_Y)&&(unprogram == 0))
                 {
@@ -4481,7 +4481,7 @@ int main(int argc, char *argv[])
 
             if (skip == 0)
             {
-            	  dump_video();
+                  dump_video();
                 //Seleuco: Esta temporizacion solamente se tiene que hacer si no se reproduce Audio. Para evitar underuns dejar que temporice el audio si existe sonido.
                 if (mconfig.sound_mode == 0 && !(mconfig.speed_loading && tape_playing) && !(mconfig.frameskip == 2))
                 {
