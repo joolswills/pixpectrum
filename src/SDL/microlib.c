@@ -52,8 +52,9 @@ struct termios saved_kbd_termios;
 
 #define SDL_arraysize(array)    (sizeof(array)/sizeof(array[0]))
 
-snd_pcm_t *playback_handle = NULL;
-snd_pcm_hw_params_t *hw_params;
+static snd_pcm_t *playback_handle = NULL;
+static snd_pcm_hw_params_t *hw_params;
+static int channels;
 
 void set_palette(palette_t palette){
 
@@ -242,9 +243,8 @@ void sound_volume(int left, int right)
 
 int sound_open(int rate, int bits, int stereo)
 {
-
     int err;
-    int channels = stereo ? 2 : 1;
+    channels = stereo ? 2 : 1;
     snd_pcm_uframes_t buffer_size;
 
     if ((err = snd_pcm_open (&playback_handle, "plughw:0,0", SND_PCM_STREAM_PLAYBACK, 0)) < 0) {
@@ -284,7 +284,11 @@ int sound_open(int rate, int bits, int stereo)
         return -1;
     }
 
-    err = snd_pcm_hw_params_set_rate_resample(playback_handle, hw_params, 0);
+    if ((err = snd_pcm_hw_params_set_rate_resample(playback_handle, hw_params, 1)) < 0) {
+        fprintf (stderr, "cannot set sample rate (%s)\n",
+             snd_strerror (err));
+        return -1;
+    }
 
     if ((err = snd_pcm_hw_params_set_rate_near (playback_handle, hw_params, &rate, 0)) < 0) {
         fprintf (stderr, "cannot set sample rate (%s)\n",
@@ -327,10 +331,11 @@ int sound_close()
 
 int sound_send(void *samples,int nsamples)
 {
-    if ( playback_handle == NULL )
+    if (playback_handle == NULL)
         return -1;
+    
     void *buffer_ptr = samples;
-    int buffer_size = nsamples >> 1;
+    int buffer_size = nsamples >> (channels == 2);
 
     while(buffer_size > 0)
     {
