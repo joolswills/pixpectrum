@@ -33,14 +33,15 @@
 #include <termios.h>
 #include <time.h>
 
-#include <sys/soundcard.h>
 #include <linux/vt.h>
 #include <linux/kd.h>
 #include <linux/keyboard.h>
 
+#include <alsa/asoundlib.h>
+
 char * video_screen8 = NULL;
 
-SDL_Surface * screen = NULL ;
+SDL_Surface * screen = NULL;
 SDL_Joystick * joy = NULL;
 
 /* RIPPED FROM THE SDL LIBS */
@@ -51,9 +52,8 @@ struct termios saved_kbd_termios;
 
 #define SDL_arraysize(array)    (sizeof(array)/sizeof(array[0]))
 
-//sound
-unsigned long mixerfd =0;
-unsigned long dspfd=0;
+snd_pcm_t *playback_handle = NULL;
+snd_pcm_hw_params_t *hw_params;
 
 void set_palette(palette_t palette){
 
@@ -235,47 +235,117 @@ int EnterGraphicsMode(void)
 
 //SOUND
 
-void sound_volume(int left, int rigth)
+void sound_volume(int left, int right)
 {
-    if(mixerfd ==0)return;
-    left=(((left*0x50)/100)<<8)|((rigth*0x50)/100);
-    ioctl(mixerfd , SOUND_MIXER_WRITE_VOLUME, &left);
-}
-
-int sound_open(int rate, int bits, int stereo){
-
-    if(!dspfd)  dspfd = open("/dev/dsp",   O_WRONLY /*| O_NONBLOCK*/);
-
-    ioctl(dspfd, SNDCTL_DSP_SETFMT, &bits);
-
-    int res = ioctl(dspfd, SNDCTL_DSP_STEREO, &stereo);
-    if(res<0)exit(-1);
-    ioctl(dspfd, SNDCTL_DSP_SPEED,  &rate);
-
-    int frag = stereo ? (0x40000|13) : (0x40000|12);
-
-    if(rate<16500) frag--;
-    if(rate<33000) frag--;
-
-    ioctl(dspfd, SNDCTL_DSP_SETFRAGMENT,  &frag);
 
 }
 
-int sound_close(){
+int sound_open(int rate, int bits, int stereo)
+{
 
-    if(dspfd)
-    {
-        close(dspfd);
-        dspfd=0;
+    int err;
+    int channels = stereo ? 2 : 1;
+    snd_pcm_uframes_t buffer_size;
+
+    if ((err = snd_pcm_open (&playback_handle, "plughw:0,0", SND_PCM_STREAM_PLAYBACK, 0)) < 0) {
+        fprintf (stderr, "cannot open audio device %s (%s)\n",
+             "default",
+             snd_strerror (err));
+        return -1;
     }
+
+    if ((err = snd_pcm_hw_params_malloc (&hw_params)) < 0) {
+        fprintf (stderr, "cannot allocate hardware parameter structure (%s)\n",
+             snd_strerror (err));
+        return -1;
+    }
+
+    if ((err = snd_pcm_hw_params_any (playback_handle, hw_params)) < 0) {
+        fprintf (stderr, "cannot initialize hardware parameter structure (%s)\n",
+             snd_strerror (err));
+        return -1;
+    }
+
+    if ((err = snd_pcm_hw_params_set_access (playback_handle, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED)) < 0) {
+        fprintf (stderr, "cannot set access type (%s)\n",
+             snd_strerror (err));
+        return -1;
+    }
+
+    if ((err = snd_pcm_hw_params_set_format (playback_handle, hw_params, SND_PCM_FORMAT_S16_LE)) < 0) {
+        fprintf (stderr, "cannot set sample format (%s)\n",
+             snd_strerror (err));
+        return -1;
+    }
+
+    if ((err = snd_pcm_hw_params_set_channels (playback_handle, hw_params, channels)) < 0) {
+        fprintf (stderr, "cannot set channel count (%s)\n",
+             snd_strerror (err));
+        return -1;
+    }
+
+    err = snd_pcm_hw_params_set_rate_resample(playback_handle, hw_params, 0);
+
+    if ((err = snd_pcm_hw_params_set_rate_near (playback_handle, hw_params, &rate, 0)) < 0) {
+        fprintf (stderr, "cannot set sample rate (%s)\n",
+             snd_strerror (err));
+        return -1;
+    }
+
+    buffer_size = 4096;
+    if (snd_pcm_hw_params_set_buffer_size_near(playback_handle, hw_params, &buffer_size) < 0) {
+        fprintf(stderr, "Error setting buffersize.\n");
+        return -1;
+    }
+
+    if ((err = snd_pcm_hw_params (playback_handle, hw_params)) < 0) {
+        fprintf (stderr, "cannot set parameters (%s)\n",
+            snd_strerror (err));
+        return -1;
+    }
+
+    snd_pcm_hw_params_free (hw_params);
+
+    if ((err = snd_pcm_prepare (playback_handle)) < 0) {
+        fprintf (stderr, "cannot prepare audio interface for use (%s)\n",
+            snd_strerror (err));
+        return -1;
+    }
+
+    return 0;
+}
+
+int sound_close()
+{
+    if (playback_handle != NULL)
+    {
+        snd_pcm_close(playback_handle);
+        playback_handle = NULL;
+    }
+  return 0;
 }
 
 int sound_send(void *samples,int nsamples)
 {
-    if(dspfd)
-       return write(dspfd,samples,nsamples<<1);
-    else
-       return -1;
+    if ( playback_handle == NULL )
+        return -1;
+    void *buffer_ptr = samples;
+    int buffer_size = nsamples >> 1;
+
+    while(buffer_size > 0)
+    {
+        snd_pcm_sframes_t written = snd_pcm_writei (playback_handle, samples, buffer_size);
+        if (written < 0)
+        {
+             snd_pcm_recover(playback_handle, written, 1);
+        }
+        else if ( written <= buffer_size )
+        {
+            buffer_size -= written;
+            buffer_ptr += written;
+        }
+   }
+  return 0;
 }
 
 void microlib_end(void)
@@ -286,8 +356,6 @@ void microlib_end(void)
         CloseKeyboard();
 
         sound_close();
-
-        close(mixerfd);
 
         if ( screen ) SDL_FreeSurface( screen ) ;
 
@@ -331,8 +399,6 @@ void microlib_init()
         SDL_JoystickUpdate() ;
 
         video_screen8 = malloc( 320 * 240 );
-
-        mixerfd  = open("/dev/mixer", O_RDWR);
 
         microlib_inited = 1;
         atexit(microlib_end);

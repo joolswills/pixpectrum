@@ -4052,11 +4052,14 @@ int main(int argc, char *argv[])
 
     load_mconfig();
 
-    sound_open(mconfig.sound_freq,16,mconfig.sound_mode >=  2);
-    sound_volume(volume,volume);//FIX sin sonido se arranca no se pone el volumen
-
-    if(mconfig.sound_mode==0)
-        sound_close();
+    if (mconfig.sound_mode > 0) {
+        if (sound_open(mconfig.sound_freq,16,mconfig.sound_mode >=  2) != 0)
+        {
+            sound_close();
+            mconfig.sound_mode = 0;
+        }
+        sound_volume(volume,volume);//FIX sin sonido se arranca no se pone el volumen
+    }
 
     tape_init();
 
