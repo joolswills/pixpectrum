@@ -44,13 +44,14 @@ char * video_screen8 = NULL;
 SDL_Surface * screen = NULL;
 SDL_Joystick * joy = NULL;
 
+#ifndef __RASPI__
 /* RIPPED FROM THE SDL LIBS */
-
 static int keyboard_fd = -1, saved_kbd_mode = -1, current_vt = -1, saved_vt = -1;
-static microlib_inited = 0;
 struct termios saved_kbd_termios;
-
 #define SDL_arraysize(array)    (sizeof(array)/sizeof(array[0]))
+#endif
+
+static microlib_inited = 0;
 
 static snd_pcm_t *playback_handle = NULL;
 static snd_pcm_hw_params_t *hw_params;
@@ -73,6 +74,7 @@ unsigned long getTicks(){
     return SDL_GetTicks();
 }
 
+#ifndef __RASPI__
 int OpenKeyboard(void)
 {
     /* Open only if not already opened */
@@ -232,7 +234,7 @@ int EnterGraphicsMode(void)
     }
     return(keyboard_fd);
 }
-
+#endif
 
 //SOUND
 
