@@ -54,6 +54,7 @@ struct termios saved_kbd_termios;
 static microlib_inited = 0;
 
 static snd_pcm_t *playback_handle = NULL;
+static snd_mixer_t *mixer_handle = NULL; 
 static snd_pcm_hw_params_t *hw_params;
 static int channels;
 
@@ -240,7 +241,23 @@ int EnterGraphicsMode(void)
 
 void sound_volume(int left, int right)
 {
+    int err;
+    long min, max;
+    float mul;                                                     
+    snd_mixer_selem_id_t *sid;
 
+    snd_mixer_selem_id_alloca(&sid);
+    snd_mixer_selem_id_set_index(sid, 0);
+    snd_mixer_selem_id_set_name(sid, "PCM");
+
+    snd_mixer_elem_t* elem = snd_mixer_find_selem(mixer_handle, sid);
+
+    snd_mixer_selem_get_playback_volume_range(elem, &min, &max);
+
+    mul = (float) (max - min) / 100;
+    long set_vol = min + (left * mul);
+
+    snd_mixer_selem_set_playback_volume_all(elem, set_vol); 
 }
 
 int sound_open(int rate, int bits, int stereo)
@@ -318,6 +335,21 @@ int sound_open(int rate, int bits, int stereo)
         return -1;
     }
 
+    if ((err = snd_mixer_open(&mixer_handle, 0)) < 0)
+    {
+        fprintf (stderr, "ALSA: unable to open mixer\n");                                                                 
+        return;                                                 
+    }
+
+    if ((err = snd_mixer_attach(mixer_handle, "hw:0")) < 0)
+    {
+        fprintf (stderr, "ALSA: unable to attach device to mixer\n");   
+        return;
+    }
+
+    snd_mixer_selem_register(mixer_handle, NULL, NULL);
+    snd_mixer_load(mixer_handle);
+
     return 0;
 }
 
@@ -328,7 +360,12 @@ int sound_close()
         snd_pcm_close(playback_handle);
         playback_handle = NULL;
     }
-  return 0;
+    if (mixer_handle != NULL)
+    {
+        snd_mixer_close(mixer_handle);
+        mixer_handle = NULL;
+    }
+    return 0;
 }
 
 int sound_send(void *samples,int nsamples)
@@ -541,8 +578,8 @@ long joystick_read()
                             button  |= JOY_BUTTON_VOLDOWN;
                             break;
 
-                    case    SDLK_PLUS:
-                    case    SDLK_KP_PLUS:
+                    case    SDLK_EQUALS:
+                    case    SDLK_KP_EQUALS:
                             button  |= JOY_BUTTON_VOLUP;
                             break;
                 }
@@ -604,8 +641,8 @@ long joystick_read()
                             button  &= ~JOY_BUTTON_VOLDOWN;
                             break;
 
-                    case    SDLK_PLUS:
-                    case    SDLK_KP_PLUS:
+                    case    SDLK_EQUALS:
+                    case    SDLK_KP_EQUALS:
                             button  &= ~JOY_BUTTON_VOLUP;
                             break;
                 }

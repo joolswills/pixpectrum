@@ -334,7 +334,7 @@ void load_mconfig()
         mconfig.frameskip = 0;
 #endif
         mconfig.contention = 1;
-        mconfig.sound_volume = 70;
+        mconfig.sound_volume = 80;
         mconfig.sound_gain = 2;//high
         mconfig.sound_mode = 4;//Mono
         mconfig.sound_freq = 44100;//44100
