@@ -357,8 +357,10 @@ void microlib_end(void)
 {
     if ( microlib_inited )
     {
+#ifndef __RASPI__
         LeaveGraphicsMode();
         CloseKeyboard();
+#endif
 
         sound_close();
 
@@ -379,14 +381,17 @@ void microlib_init()
 {
     if ( !microlib_inited )
     {
+#ifndef __RASPI__
         printf("KEYBOARD = %d\n", OpenKeyboard());
         printf("GRAPHICS = %d\n", EnterGraphicsMode());
         printf("entering init()\n"); fflush(stdout);
-
+#endif
         if ( !SDL_WasInit( SDL_INIT_EVENTTHREAD ) ) SDL_InitSubSystem( SDL_INIT_EVENTTHREAD );
         if ( !SDL_WasInit( SDL_INIT_VIDEO ) ) SDL_InitSubSystem( SDL_INIT_VIDEO );
 
-#ifdef __ARM__
+#if defined (__RASPI__)
+        screen = SDL_SetVideoMode( 640, 480, 8, SDL_HWPALETTE | SDL_SWSURFACE );
+#elif defined(__ARM__)
         screen = SDL_SetVideoMode( 320, 240, 8, SDL_HWPALETTE | SDL_DOUBLEBUF | SDL_HWSURFACE );
 #else
         screen = SDL_SetVideoMode( 640, 480, 8, SDL_HWPALETTE | SDL_DOUBLEBUF | SDL_HWSURFACE );
