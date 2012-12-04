@@ -2,21 +2,21 @@ ifeq ($(TARGET),WIZ)
 PREFIX=arm-openwiz-linux-gnu-
 BASE_DEV=/opt/openwiz/toolchain/arm-openwiz-linux-gnu
 BUILD_APP=gp2xspectrum.gpe
-PLATFORM=__ARM__
+EXTRA_CFLAGS=-O2 -DGP2X -DSOUND_X128 -D__ARM__
 EXTRA_OBJS=flush_uppermem_cache.o
 EXTRA_LIBS=-liconv
 else ifeq ($(TARGET),PI)
 PREFIX=
 BASE_DEV=/usr
 BUILD_APP=pixpectrum
-PLATFORM=__RASPI__
+EXTRA_CFLAGS=-O2 -DSOUND_X128 -D__RASPI__
 EXTRA_OBJS=
 EXTRA_LIBS=
 else
 PREFIX=
 BASE_DEV=/usr
 BUILD_APP=gp2xpectrum
-PLATFORM=__I386__
+EXTRA_CFLAGS=-DSOUND_X128
 EXTRA_OBJS=
 EXTRA_LIBS=
 endif
@@ -58,7 +58,7 @@ OBJECTS =   main.o                          \
 	        mylibspectrum/tape_accessors.o  \
 	        zxtape.o
 
-CFLAGS = -O2 -DDEBUG_MSG -DGP2X -D$(PLATFORM) -DSOUND_X128 -I. -Icpu -Iincludes  -I$(BASE_DEV)/include/SDL -I$(BASE_DEV)/include
+CFLAGS = $(EXTRA_CFLAGS)  -I. -Icpu -Iincludes  -I$(BASE_DEV)/include/SDL -I$(BASE_DEV)/include
 LDFLAGS = -lm -lc -lrt -L$(BASE_DEV)/lib -lz -lSDL $(EXTRA_LIBS) #-lzip
 
 all: $(BUILD_APP)
